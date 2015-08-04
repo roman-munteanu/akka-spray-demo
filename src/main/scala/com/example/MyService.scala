@@ -31,6 +31,13 @@ trait MyService extends HttpService {
             <html>
               <body>
                 <h1>Say hello to <i>spray-routing</i> on <i>spray-can</i>!</h1>
+
+                <form action="/projects" method="post">
+                    <input name="id" value="" />
+                    <input name="name" value="" />
+                    <textarea name="description"></textarea>
+                    <button type="submit">Submit</button>
+                </form>
               </body>
             </html>
           }
