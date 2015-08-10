@@ -2,6 +2,8 @@ package com.munteanu.demo
 
 import akka.actor._
 import akka.util.Timeout
+import com.munteanu.demo.ProjectProtocol.ProjectDeleted
+import spray.http.MediaTypes._
 import spray.http.StatusCodes
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
@@ -22,7 +24,7 @@ trait RestApi extends HttpService with ActorLogging { actor: Actor =>
 
   implicit val timeout = Timeout(10 seconds)
 
-  var projects = Vector[Project]()
+  var projects = Vector[Project](Project("1", "First project", "First description"))
 
   def routes: Route =
 
@@ -54,7 +56,35 @@ trait RestApi extends HttpService with ActorLogging { actor: Actor =>
               .getOrElse(responder ! ProjectNotFound)
           }
         }
-    }
+    } ~
+      path("") {
+        get {
+          respondWithMediaType(`text/html`) {
+            complete {
+              <html>
+                <head>
+                  <title>Spray Demo</title>
+                  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                </head>
+                <body>
+                  <h1>Demo</h1>
+
+                  <fieldset>
+                    <legend>Add project</legend>
+                    <form action="/projects" method="post">
+                      <input name="id" value="" placeholder="id" />
+                      <input name="name" value="" placeholder="name" />
+                      <textarea name="description" placeholder="description"></textarea>
+                      <button type="submit">Submit</button>
+                    </form>
+                  </fieldset>
+
+                </body>
+              </html>
+            }
+          }
+        }
+      }
 
   private def createResponder(requestContext: RequestContext) = {
     context.actorOf(Props(new Responder(requestContext)))
@@ -68,11 +98,11 @@ trait RestApi extends HttpService with ActorLogging { actor: Actor =>
   }
 
   private def deleteProject(id: String) = {
-    projects = projects.filterNot(_.id == id.toLong)
+    projects = projects.filterNot(_.id == id)
   }
 
   private def findProjectById(id: String): Option[Project] = {
-    projects.find(_.id == id.toLong)
+    projects.find(_.id == id)
   }
 
 }
