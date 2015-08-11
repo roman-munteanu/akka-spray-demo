@@ -28,7 +28,7 @@ trait RestApi extends HttpService with ActorLogging { actor: Actor =>
 
   def routes: Route =
 
-    pathPrefix("projects") {
+    pathPrefix("rest" / "projects") {
       pathEnd {
         get { requestContext =>
           val responder = createResponder(requestContext)
@@ -57,30 +57,49 @@ trait RestApi extends HttpService with ActorLogging { actor: Actor =>
           }
         }
     } ~
+//      path("") {
+//        get {
+//          respondWithMediaType(`text/html`) {
+//            complete {
+//              <html>
+//                <head>
+//                  <title>Spray Demo</title>
+//                  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+//                </head>
+//                <body>
+//                  <h1>Demo</h1>
+//
+//                  <fieldset>
+//                    <legend>Add project</legend>
+//                    <form action="/projects" method="post">
+//                      <input name="id" value="" placeholder="id" />
+//                      <input name="name" value="" placeholder="name" />
+//                      <textarea name="description" placeholder="description"></textarea>
+//                      <button type="submit">Submit</button>
+//                    </form>
+//                  </fieldset>
+//
+//                </body>
+//              </html>
+//            }
+//          }
+//        }
+//      }
+      pathPrefix("css") {
+        get {
+          getFromResourceDirectory("css")
+        }
+      } ~
+      pathPrefix("src") {
+        get {
+          getFromResourceDirectory("src")
+        }
+      } ~
       path("") {
         get {
           respondWithMediaType(`text/html`) {
             complete {
-              <html>
-                <head>
-                  <title>Spray Demo</title>
-                  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                </head>
-                <body>
-                  <h1>Demo</h1>
-
-                  <fieldset>
-                    <legend>Add project</legend>
-                    <form action="/projects" method="post">
-                      <input name="id" value="" placeholder="id" />
-                      <input name="name" value="" placeholder="name" />
-                      <textarea name="description" placeholder="description"></textarea>
-                      <button type="submit">Submit</button>
-                    </form>
-                  </fieldset>
-
-                </body>
-              </html>
+              IndexLayout(projects)
             }
           }
         }

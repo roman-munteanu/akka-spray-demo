@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+
+.cfx:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+    }
+.cfx { display: inline-block; }
+* html .cfx { height: 1%; }
+.cfx { display: block; }
+
+
+/* ----------------------------- common */
+body{font-family: "Verdana"}
+h1,h2,h3{font-family: "Georgia"}
+
+.hidden{
+    display: none;
+}
+.f-left{
+    float: left;
+}
+.f-right{
+    float: right;
+}
+.c-both{
+    clear: both;
+}
+.error{
+    color: #cc0000;
+}
+.t-center{
+    text-align: center;
+}
+.inline-block{
+	display: inline-block;
+}
+/* ----------------------------- ^ common */
+
+/* ----------------------------- IE fix */
+header, footer, article, section, nav, menu {
+  display: block;
+}
+/* ----------------------------- ^ IE fix */
