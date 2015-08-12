@@ -10,8 +10,8 @@
 
     <logger name="akka" level="INFO" />
     <logger name="spray" level="INFO" />
-
-    <logger name="com.danielasfregola" level="INFO" />
+    <logger name="scala.slick" level="INFO"/>
+    <logger name="com.munteanu.demo" level="INFO" />
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

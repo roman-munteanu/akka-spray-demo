@@ -1,8 +1,11 @@
 package com.munteanu.demo
 
 import akka.actor._
+import akka.event.slf4j.SLF4JLogging
 import akka.util.Timeout
 import com.munteanu.demo.ProjectProtocol.ProjectDeleted
+import com.munteanu.demo.dao.ProjectDAO
+import com.munteanu.demo.domain.Project
 import spray.http.MediaTypes._
 import spray.http.StatusCodes
 import spray.httpx.SprayJsonSupport._
@@ -10,21 +13,27 @@ import spray.routing._
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.{Success, Failure}
 
 /**
  * Created by romunteanu on 8/3/2015.
  */
 class RestInterface extends HttpServiceActor with RestApi {
 
+  override implicit def actorRefFactory = context
+
   def receive = runRoute(routes)
 }
 
-trait RestApi extends HttpService with ActorLogging { actor: Actor =>
+trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   import  com.munteanu.demo.ProjectProtocol._
 
   implicit val timeout = Timeout(10 seconds)
 
-  var projects = Vector[Project](Project("1", "First project", "First description"))
+  var projects = Vector[Project](Project(Some(1), "First project", "First description"))
+
+  val projectService = new ProjectDAO
+  implicit val executionContext = actorRefFactory.dispatcher
 
   def routes: Route =
 
@@ -32,10 +41,15 @@ trait RestApi extends HttpService with ActorLogging { actor: Actor =>
       pathEnd {
         get { requestContext =>
           val responder = createResponder(requestContext)
-          responder ! projects
+//          responder ! projects
+          projectService.findAll().onComplete {
+            case Success(lst) => responder ! lst.toVector
+            case Failure(ex) => responder ! ProjectNotFound
+          }
         } ~
         post {
           entity(as[Project]) { project => requestContext =>
+            log.debug(project.toString)
             val responder = createResponder(requestContext)
             createProject(project) match {
               case true => responder ! ProjectCreated
@@ -117,11 +131,11 @@ trait RestApi extends HttpService with ActorLogging { actor: Actor =>
   }
 
   private def deleteProject(id: String) = {
-    projects = projects.filterNot(_.id == id)
+    projects = projects.filterNot(_.id.get == id.toLong)
   }
 
   private def findProjectById(id: String): Option[Project] = {
-    projects.find(_.id == id)
+    projects.find(_.id.get == id.toLong)
   }
 
 }

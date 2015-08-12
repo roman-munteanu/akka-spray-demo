@@ -9,6 +9,7 @@ jQuery(function($) {
         for (idx in arr) {
             obj[arr[idx]['name']] = arr[idx]['value'];
         }
+        obj.id = parseInt(obj.id, 10);
         var formData = JSON.stringify(obj);
         console.log(formData);
 
@@ -42,9 +43,9 @@ jQuery(function($) {
             console.log(resp);
           }
         }).always(function() {
-              // Reload the current page, without using the cache
-              document.location.reload(true);
-          });
+          // Reload the current page, without using the cache
+          document.location.reload(true);
+        });
     });
 
 });

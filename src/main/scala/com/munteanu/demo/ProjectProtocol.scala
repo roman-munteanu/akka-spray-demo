@@ -6,8 +6,7 @@ import spray.json._
  * Created by romunteanu on 8/3/2015.
  */
 object ProjectProtocol extends DefaultJsonProtocol {
-
-  case class Project(id: String, name: String, description: String)
+  import com.munteanu.demo.domain.Project
 
   case object ProjectCreated
 

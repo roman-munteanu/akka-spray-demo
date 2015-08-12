@@ -1,6 +1,6 @@
 package com.munteanu.demo
 
-import com.munteanu.demo.ProjectProtocol.Project
+import com.munteanu.demo.domain.Project
 
 /**
  * Created by romunteanu on 8/11/2015.
@@ -50,6 +50,6 @@ object IndexLayout {
   private def renderProjects(projects: Vector[Project]) =
     for (project <- projects) yield
       <li>
-        <b>{project.id}</b> {project.name} <em>{project.description}</em> <button type="button" data-ident={project.id} class="del-btn">remove</button>
+        <b>{project.id.get.toString}</b> {project.name} <em>{project.description}</em> <button type="button" data-ident={project.id.get.toString} class="del-btn">remove</button>
       </li>
 }

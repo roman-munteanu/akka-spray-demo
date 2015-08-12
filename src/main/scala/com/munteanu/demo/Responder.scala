@@ -1,6 +1,7 @@
 package com.munteanu.demo
 
 import akka.actor._
+import com.munteanu.demo.domain.Project
 import spray.http.StatusCodes
 import spray.routing._
 
