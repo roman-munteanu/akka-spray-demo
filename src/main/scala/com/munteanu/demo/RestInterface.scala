@@ -65,7 +65,7 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
           val responder = createResponder(requestContext)
 //          responder ! projects
           projectService.findAll().onComplete {
-            case Success(projectsSeq) => responder ! projectsSeq.toVector
+            case Success(projectsSeq) => responder ! projectsSeq
             case Failure(ex) => responder ! ProjectNotFound
           }
         } ~
@@ -106,7 +106,18 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
             }
           }
         }
-    }
+    } ~
+      pathPrefix("rest" / "projects" / "name") {
+        path(Segment) { keyword =>
+          get { requestContext =>
+            val responder = createResponder(requestContext)
+            projectService.findByName(keyword).onComplete {
+              case Success(projectsSeq) => responder ! projectsSeq
+              case Failure(ex) => responder ! ProjectNotFound
+            }
+          }
+        }
+      }
 //      ~ path("") {
 //        get {
 //          respondWithMediaType(`text/html`) {

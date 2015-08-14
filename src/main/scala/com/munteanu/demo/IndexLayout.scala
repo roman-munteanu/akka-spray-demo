@@ -9,7 +9,7 @@ object IndexLayout {
   def apply(projects: Seq[Project]) =
     <html>
       <head>
-        <title>Spray Demo</title>
+        <title>Spray Slick Demo</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="/css/main.css" rel="stylesheet" />
 
@@ -39,7 +39,7 @@ object IndexLayout {
 
   private def header =
     <header>
-      <h1>Demo</h1>
+      <h1>Sub-Zero Demo</h1>
     </header>
 
   private def footer =

@@ -34,4 +34,12 @@ class ProjectDAO extends DbConfig {
   def save(project: Project): Future[Int] = {
     db.run(projects.insertOrUpdate(project))
   }
+
+  def findByName(name: String): Future[Seq[Project]] = {
+    val query = for (
+      p <- projects
+      if p.name like "%" + name + "%"
+    ) yield p
+    db.run(query.result)
+  }
 }
