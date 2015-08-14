@@ -6,7 +6,7 @@ import slick.driver.MySQLDriver.api._
  * Created by romunteanu on 8/12/2015.
  */
 case class Project(id: Option[Long] = None, name: String, description: String) {
-  override def toString: String = s"Project[id=${id.get}, name=$name, description=$description]"
+  override def toString: String = s"Project[id=$id, name=$name, description=$description]"
 }
 
 //object Project {

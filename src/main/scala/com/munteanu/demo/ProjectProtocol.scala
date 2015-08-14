@@ -8,13 +8,13 @@ import spray.json._
 object ProjectProtocol extends DefaultJsonProtocol {
   import com.munteanu.demo.domain.Project
 
-  case object ProjectCreated
+  case class ProjectCreated(msg: String = "Project has been successfully created.")
 
-  case object ProjectDeleted
+  case class ProjectDeleted(msg: String = "Successful delete operation.")
 
-  case object ProjectAlreadyExists
+  case class ProjectAlreadyExists(msg: String = "Project already exists.")
 
-  case object ProjectNotFound
+  case class ProjectNotFound(msg: String = "Project not found.")
 
   implicit val jsonFormatProject = jsonFormat3(Project.apply)
 }

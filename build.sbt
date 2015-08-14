@@ -22,6 +22,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"  %% "akka-slf4j"      % akkaVersion,
     "com.typesafe.slick" %%  "slick"          % "3.0.1",
     "org.slf4j"          %   "slf4j-nop"      % "1.6.4",
+    "c3p0"               %   "c3p0"           % "0.9.1.2",
     "mysql"              %  "mysql-connector-java" % "5.1.35",
     "ch.qos.logback"     %  "logback-classic" % "1.1.2",
     "com.typesafe.akka"  %% "akka-testkit"    % akkaVersion  % "test",

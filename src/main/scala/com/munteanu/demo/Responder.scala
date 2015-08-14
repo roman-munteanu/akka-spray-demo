@@ -16,7 +16,7 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
 
   def receive = {
 
-    case projects: Vector[Project] => {
+    case projects: Seq[Project] => {
       requestContext.complete(StatusCodes.OK, projects)
       self ! PoisonPill
     }

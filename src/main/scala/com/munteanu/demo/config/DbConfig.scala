@@ -1,5 +1,6 @@
 package com.munteanu.demo.config
 
+import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.munteanu.demo.domain.{Project, Projects}
 import com.typesafe.config.ConfigFactory
 import slick.dbio.DBIO
@@ -27,14 +28,24 @@ trait DbConfig {
 
   lazy val dbPassword = Try(config.getString("db.password")).toOption.orNull
 
-  // init Database instance
-  protected val db = Database.forURL(url = "jdbc:mysql://%s:%d/%s".format(dbHost, dbPort, dbName),
-    user = dbUser, password = dbPassword, driver = dbDriver)
+  // !! no connection pool
+//  val db = Database.forURL(url = "jdbc:mysql://%s:%d/%s".format(dbHost, dbPort, dbName),
+//    user = dbUser, password = dbPassword, driver = dbDriver)
+
+  val db = {
+    val ds = new ComboPooledDataSource
+    ds.setDriverClass(dbDriver)
+    ds.setJdbcUrl("jdbc:mysql://%s:%d/%s".format(dbHost, dbPort, dbName))
+    ds.setUser(dbUser)
+    ds.setPassword(dbPassword)
+    Database.forDataSource(ds)
+  }
 
   val projects = TableQuery[Projects]
 
   // populate the Database
   val setup = DBIO.seq(
+//    projects.schema.drop,
     projects.schema.create,
 
 //    projects += Project(Some(1), "Gemheap", "main")

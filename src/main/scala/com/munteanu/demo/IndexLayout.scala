@@ -6,7 +6,7 @@ import com.munteanu.demo.domain.Project
  * Created by romunteanu on 8/11/2015.
  */
 object IndexLayout {
-  def apply(projects: Vector[Project]) =
+  def apply(projects: Seq[Project]) =
     <html>
       <head>
         <title>Spray Demo</title>
@@ -21,7 +21,7 @@ object IndexLayout {
 
         <fieldset>
           <legend>Add project</legend>
-          <form action="/projects" method="post" id="project_form">
+          <form action="/rest/projects" method="post" id="project_form">
             <input name="id" value="" placeholder="id" />
             <input name="name" value="" placeholder="name" />
             <textarea name="description" placeholder="description"></textarea>
@@ -47,7 +47,7 @@ object IndexLayout {
       <p>footer</p>
     </footer>
 
-  private def renderProjects(projects: Vector[Project]) =
+  private def renderProjects(projects: Seq[Project]) =
     for (project <- projects) yield
       <li>
         <b>{project.id.get.toString}</b> {project.name} <em>{project.description}</em> <button type="button" data-ident={project.id.get.toString} class="del-btn">remove</button>

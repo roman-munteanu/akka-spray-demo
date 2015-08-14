@@ -28,50 +28,86 @@ class RestInterface extends HttpServiceActor with RestApi {
 trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   import  com.munteanu.demo.ProjectProtocol._
 
+  implicit val executionContext = actorRefFactory.dispatcher
   implicit val timeout = Timeout(10 seconds)
 
-  var projects = Vector[Project](Project(Some(1), "First project", "First description"))
-
   val projectService = new ProjectDAO
-  implicit val executionContext = actorRefFactory.dispatcher
+
+  var projectsData = Vector[Project](Project(Some(1), "First project", "First description"))
 
   def routes: Route =
-
+    path("app") {
+      get {
+        respondWithMediaType(`text/html`) {
+//          complete {
+//            IndexLayout(projectsData)
+//          }
+          onComplete(projectService.findAll()) {
+            case Success(projects: Seq[Project]) => complete(IndexLayout(projects))
+            case Failure(ex)    => complete(s"An error occurred: ${ex.getMessage}")
+          }
+        }
+      }
+    } ~
+      pathPrefix("css") {
+        get {
+          getFromResourceDirectory("css")
+        }
+      } ~
+      pathPrefix("src") {
+        get {
+          getFromResourceDirectory("src")
+        }
+      } ~
     pathPrefix("rest" / "projects") {
       pathEnd {
         get { requestContext =>
           val responder = createResponder(requestContext)
 //          responder ! projects
           projectService.findAll().onComplete {
-            case Success(lst) => responder ! lst.toVector
+            case Success(projectsSeq) => responder ! projectsSeq.toVector
             case Failure(ex) => responder ! ProjectNotFound
           }
         } ~
         post {
           entity(as[Project]) { project => requestContext =>
-            log.debug(project.toString)
+            log.debug(s"SAVE: ${project.toString}")
             val responder = createResponder(requestContext)
-            createProject(project) match {
-              case true => responder ! ProjectCreated
-              case _ => responder ! ProjectAlreadyExists
+//            createProject(project) match {
+//              case true => responder ! ProjectCreated
+//              case _ => responder ! ProjectAlreadyExists
+//            }
+            projectService.save(project).onComplete {
+              case Success(_) => responder ! ProjectCreated
+              case Failure(_) => responder ! ProjectCreated("Save operation failed.")
             }
           }
         }
       } ~
         path(Segment) { id =>
           delete { requestContext =>
+            log.debug(s"DELETE: $id")
             val responder = createResponder(requestContext)
-            deleteProject(id)
-            responder ! ProjectDeleted
+//            deleteProject(id)
+//            responder ! ProjectDeleted
+            projectService.delete(id.toLong).onComplete {
+              case Success(_) => responder ! ProjectDeleted
+              case Failure(_) => responder ! ProjectDeleted("Delete operation failed.")
+            }
           } ~
           get { requestContext =>
+            log.debug(s"GET: $id")
             val responder = createResponder(requestContext)
-            findProjectById(id).map(responder ! _)
-              .getOrElse(responder ! ProjectNotFound)
+//            findProjectById(id).map(responder ! _)
+//              .getOrElse(responder ! ProjectNotFound)
+            projectService.findOne(id.toLong).onComplete {
+              case Success(proj) => responder ! proj
+              case Failure(ex) => responder ! ProjectNotFound
+            }
           }
         }
-    } ~
-//      path("") {
+    }
+//      ~ path("") {
 //        get {
 //          respondWithMediaType(`text/html`) {
 //            complete {
@@ -99,25 +135,7 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
 //          }
 //        }
 //      }
-      pathPrefix("css") {
-        get {
-          getFromResourceDirectory("css")
-        }
-      } ~
-      pathPrefix("src") {
-        get {
-          getFromResourceDirectory("src")
-        }
-      } ~
-      path("") {
-        get {
-          respondWithMediaType(`text/html`) {
-            complete {
-              IndexLayout(projects)
-            }
-          }
-        }
-      }
+
 
   private def createResponder(requestContext: RequestContext) = {
     context.actorOf(Props(new Responder(requestContext)))
@@ -125,17 +143,17 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
 
   // dao
   private def createProject(project: Project): Boolean = {
-    val doesNotExist: Boolean = !projects.exists(_.name eq project.name)
-    if (doesNotExist) projects = projects :+ project
+    val doesNotExist: Boolean = !projectsData.exists(_.name eq project.name)
+    if (doesNotExist) projectsData = projectsData :+ project
     doesNotExist
   }
 
   private def deleteProject(id: String) = {
-    projects = projects.filterNot(_.id.get == id.toLong)
+    projectsData = projectsData.filterNot(_.id.get == id.toLong)
   }
 
   private def findProjectById(id: String): Option[Project] = {
-    projects.find(_.id.get == id.toLong)
+    projectsData.find(_.id.get == id.toLong)
   }
 
 }
