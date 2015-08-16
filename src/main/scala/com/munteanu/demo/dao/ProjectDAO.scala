@@ -23,8 +23,8 @@ class ProjectDAO extends DbConfig {
     db.run(projects.result).asInstanceOf[Seq[Project]]
   }
 
-  def findOne(id: Long): Future[Project] = {
-    db.run(filterQuery(id).result.head)
+  def findOne(id: Long): Future[Option[Project]] = {
+    db.run(filterQuery(id).result.headOption)
   }
 
   def delete(id: Long): Future[Int] = {

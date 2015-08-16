@@ -101,7 +101,7 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
 //            findProjectById(id).map(responder ! _)
 //              .getOrElse(responder ! ProjectNotFound)
             projectService.findOne(id.toLong).onComplete {
-              case Success(proj) => responder ! proj
+              case Success(Some(proj)) => responder ! proj
               case Failure(ex) => responder ! ProjectNotFound
             }
           }
