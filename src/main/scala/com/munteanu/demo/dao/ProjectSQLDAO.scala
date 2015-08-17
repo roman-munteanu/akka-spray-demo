@@ -13,7 +13,7 @@ import scala.concurrent.Future
 class ProjectSQLDAO extends DbConfig {
   
   def findAll(): Future[Seq[Project]] = {
-    db.run(sql"""SELECT * FROM projects""".as[Project])
+    db.run(sql"SELECT * FROM projects".as[Project])
   }
 
   def findOne(id: Long): Future[Option[Project]] = {
@@ -22,7 +22,7 @@ class ProjectSQLDAO extends DbConfig {
   }
 
   def delete(id: Long): Future[Int] = {
-    db.run(sqlu"DELETE * FROM projects WHERE id = $id")
+    db.run(sqlu"DELETE FROM projects WHERE id = $id")
   }
 
   def save(p: Project): Future[Int] = {
@@ -33,6 +33,7 @@ class ProjectSQLDAO extends DbConfig {
   }
 
   def findByName(name: String): Future[Seq[Project]] = {
+    // TODO
 //    StaticQuery.queryNA[Project]("SELECT * FROM projects WHERE name LIKE '%" + name + "%'")
     db.run(sql"SELECT * FROM projects WHERE name LIKE '%$name%'".as[Project])
   }
