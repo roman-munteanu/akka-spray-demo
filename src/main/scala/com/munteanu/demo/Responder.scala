@@ -2,6 +2,7 @@ package com.munteanu.demo
 
 import akka.actor._
 import com.munteanu.demo.domain.Project
+import com.munteanu.demo.protocol.ProjectProtocol
 import spray.http.StatusCodes
 import spray.routing._
 
@@ -11,7 +12,7 @@ import scala.language.postfixOps
  * Created by romunteanu on 8/4/2015.
  */
 class Responder(requestContext: RequestContext) extends Actor with ActorLogging {
-  import com.munteanu.demo.ProjectProtocol._
+  import ProjectProtocol._
   import spray.httpx.SprayJsonSupport._
 
   def receive = {

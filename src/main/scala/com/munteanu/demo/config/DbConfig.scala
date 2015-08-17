@@ -1,7 +1,7 @@
 package com.munteanu.demo.config
 
 import com.mchange.v2.c3p0.ComboPooledDataSource
-import com.munteanu.demo.domain.{Project, Projects}
+import com.munteanu.demo.domain._
 import com.typesafe.config.ConfigFactory
 import slick.dbio.DBIO
 import slick.driver.MySQLDriver.api._
@@ -42,16 +42,26 @@ trait DbConfig {
   }
 
   val projects = TableQuery[Projects]
+  val myTasks = TableQuery[MyTasks]
 
   // populate the Database
   val setup = DBIO.seq(
+
+//    myTasks.schema.drop,
 //    projects.schema.drop,
-    projects.schema.create,
+//    (myTasks.schema ++ projects.schema).drop,
+    (projects.schema ++ myTasks.schema).create,
 
 //    projects += Project(Some(1), "Gemheap", "main")
     projects ++= Seq(
       Project(Some(1), "Gemheap", "App website"),
       Project(Some(2), "ChirpExpenses", "Expenses manager")
+    ),
+
+    myTasks ++= Seq(
+      MyTask(Some(1), "First task", 1),
+      MyTask(Some(2), "Second task", 1),
+      MyTask(Some(3), "Third task", 2)
     )
   )
 

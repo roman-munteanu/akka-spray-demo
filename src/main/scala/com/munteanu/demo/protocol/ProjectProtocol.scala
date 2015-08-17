@@ -1,4 +1,4 @@
-package com.munteanu.demo
+package com.munteanu.demo.protocol
 
 import spray.json._
 

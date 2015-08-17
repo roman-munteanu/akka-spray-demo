@@ -3,11 +3,9 @@ package com.munteanu.demo
 import akka.actor._
 import akka.event.slf4j.SLF4JLogging
 import akka.util.Timeout
-import com.munteanu.demo.ProjectProtocol.ProjectDeleted
-import com.munteanu.demo.dao.{ProjectSQLDAO, ProjectDAO}
-import com.munteanu.demo.domain.Project
+import com.munteanu.demo.dao.{MyTaskDAO, ProjectSQLDAO, ProjectDAO}
+import com.munteanu.demo.domain.{Project, MyTask}
 import spray.http.MediaTypes._
-import spray.http.StatusCodes
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
@@ -26,13 +24,15 @@ class RestInterface extends HttpServiceActor with RestApi {
 }
 
 trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
-  import  com.munteanu.demo.ProjectProtocol._
+  import com.munteanu.demo.protocol.ProjectProtocol._
+  import com.munteanu.demo.protocol.MyTaskProtocol._
 
   implicit val executionContext = actorRefFactory.dispatcher
   implicit val timeout = Timeout(10 seconds)
 
   val projectService = new ProjectDAO
 //  val projectService = new ProjectSQLDAO
+  val myTaskService = new MyTaskDAO
 
   def routes: Route =
     path("app") {
@@ -94,17 +94,28 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
           }
         }
     } ~
-      pathPrefix("rest" / "projects" / "name") {
-        path(Segment) { keyword =>
-          get { requestContext =>
-            val responder = createResponder(requestContext)
-            projectService.findByName(keyword).onComplete {
-              case Success(projectsSeq) => responder ! projectsSeq
-              case Failure(ex) => responder ! ProjectNotFound
-            }
+    pathPrefix("rest" / "projects" / "name") {
+      path(Segment) { keyword =>
+        get { requestContext =>
+          val responder = createResponder(requestContext)
+          projectService.findByName(keyword).onComplete {
+            case Success(projectsSeq) => responder ! projectsSeq
+            case Failure(ex) => responder ! ProjectNotFound
           }
         }
       }
+    } ~
+    pathPrefix("rest" / "tasks") {
+      pathEnd {
+        get { requestContext =>
+          val responder = createResponder(requestContext)
+          myTaskService.findAllJoined().onComplete {
+            case Success(joinedTasks) => responder ! joinedTasks
+            case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
+          }
+        }
+      }
+    }
 
   private def createResponder(requestContext: RequestContext) = {
     context.actorOf(Props(new Responder(requestContext)))
