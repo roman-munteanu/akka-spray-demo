@@ -34,8 +34,9 @@ class ProjectSQLDAO extends DbConfig {
 
   def findByName(name: String): Future[Seq[Project]] = {
     // TODO
+    val like = " LIKE '%" + name + "%'"
 //    StaticQuery.queryNA[Project]("SELECT * FROM projects WHERE name LIKE '%" + name + "%'")
-    db.run(sql"SELECT * FROM projects WHERE name LIKE '%$name%'".as[Project])
+    db.run(sql""" SELECT * FROM projects WHERE name #$like """.as[Project])
   }
 
   implicit val getProjectResult = GetResult(r => Project(Some(r.nextLong()), r.nextString(), r.nextString()))
