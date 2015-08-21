@@ -16,7 +16,7 @@ case class Project(id: Option[Long] = None, name: String, description: String) {
 class Projects(tag: Tag) extends Table[Project](tag, "projects") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def name = column[String]("name")
-  def description = column[String]("description")
+  def description = column[String]("description") // O.Length(150)
 
   def * = (id.?, name, description) <> (Project.tupled, Project.unapply)
 }

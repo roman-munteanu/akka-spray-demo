@@ -1,6 +1,7 @@
 package com.munteanu.demo.config
 
 import com.mchange.v2.c3p0.ComboPooledDataSource
+import com.munteanu.demo.dao.DbTables
 import com.munteanu.demo.domain._
 import com.typesafe.config.ConfigFactory
 import slick.dbio.DBIO
@@ -12,7 +13,7 @@ import scala.util.Try
 /**
  * Created by romunteanu on 8/12/2015.
  */
-trait DbConfig {
+trait DbConfig extends DbTables {
 
   val config = ConfigFactory.load()
 
@@ -40,9 +41,6 @@ trait DbConfig {
     ds.setPassword(dbPassword)
     Database.forDataSource(ds)
   }
-
-  val projects = TableQuery[Projects]
-  val myTasks = TableQuery[MyTasks]
 
   // populate the Database
   val setup = DBIO.seq(

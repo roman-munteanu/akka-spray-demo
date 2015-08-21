@@ -21,6 +21,8 @@ class ProjectDAO extends DbConfig {
 
   def findAllAsSeq(): Seq[Project] = {
     db.run(projects.result).asInstanceOf[Seq[Project]]
+    // TODO
+//    db.run(projects.result).mapTo
   }
 
   def findOne(id: Long): Future[Option[Project]] = {
