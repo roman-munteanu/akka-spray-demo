@@ -3,12 +3,14 @@ package com.munteanu.demo
 import akka.actor._
 import akka.event.slf4j.SLF4JLogging
 import akka.util.Timeout
-import com.munteanu.demo.dao.{MyTaskDAO, ProjectSQLDAO, ProjectDAO}
-import com.munteanu.demo.domain.{Project, MyTask}
+import com.munteanu.demo.dao.{WorkingDayDAO, MyTaskDAO, ProjectSQLDAO, ProjectDAO}
+import com.munteanu.demo.domain.{WorkingDay, Project, MyTask}
+import com.munteanu.demo.dto.WorkingDayDTO
 import spray.http.MediaTypes._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.{Success, Failure}
@@ -26,6 +28,8 @@ class RestInterface extends HttpServiceActor with RestApi {
 trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   import com.munteanu.demo.protocol.ProjectProtocol._
   import com.munteanu.demo.protocol.MyTaskProtocol._
+  import com.munteanu.demo.protocol.WorkingDayProtocol._
+  import com.munteanu.demo.protocol.WorkingDayDTOProtocol._
 
   implicit val executionContext = actorRefFactory.dispatcher
   implicit val timeout = Timeout(10 seconds)
@@ -33,9 +37,10 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   val projectService = new ProjectDAO
 //  val projectService = new ProjectSQLDAO
   val myTaskService = new MyTaskDAO
+  val workingDayService = new WorkingDayDAO
 
   def routes: Route =
-    path("app") {
+    pathPrefix("app") {
       get {
         respondWithMediaType(`text/html`) {
           onComplete(projectService.findAll()) {
@@ -111,6 +116,18 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
           val responder = createResponder(requestContext)
           myTaskService.findAllJoined().onComplete {
             case Success(joinedTasks) => responder ! joinedTasks
+            case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
+          }
+        }
+      }
+    } ~
+    pathPrefix("rest" / "days") {
+      pathEnd {
+        get { requestContext =>
+          val responder = createResponder(requestContext)
+          workingDayService.findAllJoined().onComplete {
+            case Success(data) => responder ! data
+//            case Success(data) => responder ! data.foldLeft(ListBuffer[WorkingDayDTO]()) { (acc, t) => acc += WorkingDayDTO(t._1, t._2) }
             case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
           }
         }

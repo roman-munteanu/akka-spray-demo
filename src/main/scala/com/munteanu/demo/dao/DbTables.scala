@@ -1,6 +1,6 @@
 package com.munteanu.demo.dao
 
-import com.munteanu.demo.domain.{MyTasks, Projects}
+import com.munteanu.demo.domain.{WorkingDayTable, MyTasks, Projects}
 import slick.lifted.TableQuery
 
 /**
@@ -9,4 +9,5 @@ import slick.lifted.TableQuery
 trait DbTables {
   lazy val projects = TableQuery[Projects]
   lazy val myTasks = TableQuery[MyTasks]
+  lazy val workingDays = TableQuery[WorkingDayTable]
 }

@@ -25,6 +25,8 @@ libraryDependencies ++= {
     "c3p0"               %   "c3p0"           % "0.9.1.2",
     "mysql"              %  "mysql-connector-java" % "5.1.35",
     "ch.qos.logback"     %  "logback-classic" % "1.1.2",
+    "joda-time"          %  "joda-time"       % "2.7",
+    "org.joda"           %  "joda-convert"    % "1.7",
     "com.typesafe.akka"  %% "akka-testkit"    % akkaVersion  % "test",
     "io.spray"           %% "spray-testkit"   % sprayVersion % "test",
     "org.specs2"         %% "specs2"          % "2.3.13"     % "test"

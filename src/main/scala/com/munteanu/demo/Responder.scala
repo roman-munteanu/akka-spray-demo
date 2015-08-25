@@ -1,8 +1,11 @@
 package com.munteanu.demo
 
 import akka.actor._
-import com.munteanu.demo.domain.Project
+import com.munteanu.demo.domain.{WorkingDay, Project}
+import com.munteanu.demo.dto.WorkingDayDTO
 import com.munteanu.demo.protocol.ProjectProtocol
+import com.munteanu.demo.protocol.WorkingDayProtocol
+import com.munteanu.demo.protocol.WorkingDayDTOProtocol
 import spray.http.StatusCodes
 import spray.routing._
 
@@ -13,6 +16,7 @@ import scala.language.postfixOps
  */
 class Responder(requestContext: RequestContext) extends Actor with ActorLogging {
   import ProjectProtocol._
+//  import WorkingDayDTOProtocol._
   import spray.httpx.SprayJsonSupport._
 
   def receive = {
@@ -38,5 +42,13 @@ class Responder(requestContext: RequestContext) extends Actor with ActorLogging 
     case ProjectAlreadyExists =>
       requestContext.complete(StatusCodes.Conflict)
       self ! PoisonPill
+
+//    case joinedWorkingDays: Seq[WorkingDayDTO] =>
+//      requestContext.complete(StatusCodes.OK, joinedWorkingDays)
+//      self ! PoisonPill
+
+//    case joinedWorkingDays: Seq[(WorkingDay, String)] =>
+//      requestContext.complete(StatusCodes.OK, joinedWorkingDays)
+//      self ! PoisonPill
   }
 }
