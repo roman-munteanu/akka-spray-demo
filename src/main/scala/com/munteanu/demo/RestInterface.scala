@@ -6,6 +6,8 @@ import akka.util.Timeout
 import com.munteanu.demo.dao.{WorkingDayDAO, MyTaskDAO, ProjectSQLDAO, ProjectDAO}
 import com.munteanu.demo.domain.{WorkingDay, Project, MyTask}
 import com.munteanu.demo.dto.WorkingDayDTO
+import com.munteanu.demo.layout.IndexLayout
+import com.munteanu.demo.responder.{MyTaskResponder, WorkingDayResponder, Responder}
 import spray.http.MediaTypes._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
@@ -28,8 +30,6 @@ class RestInterface extends HttpServiceActor with RestApi {
 trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   import com.munteanu.demo.protocol.ProjectProtocol._
   import com.munteanu.demo.protocol.MyTaskProtocol._
-  import com.munteanu.demo.protocol.WorkingDayProtocol._
-  import com.munteanu.demo.protocol.WorkingDayDTOProtocol._
 
   implicit val executionContext = actorRefFactory.dispatcher
   implicit val timeout = Timeout(10 seconds)
@@ -113,7 +113,7 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
     pathPrefix("rest" / "tasks") {
       pathEnd {
         get { requestContext =>
-          val responder = createResponder(requestContext)
+          val responder = createMyTaskResponder(requestContext)
           myTaskService.findAllJoined().onComplete {
             case Success(joinedTasks) => responder ! joinedTasks
             case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
@@ -124,10 +124,10 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
     pathPrefix("rest" / "days") {
       pathEnd {
         get { requestContext =>
-          val responder = createResponder(requestContext)
+          val responder = createWorkingDayResponder(requestContext)
           workingDayService.findAllJoined().onComplete {
-            case Success(data) => responder ! data
-//            case Success(data) => responder ! data.foldLeft(ListBuffer[WorkingDayDTO]()) { (acc, t) => acc += WorkingDayDTO(t._1, t._2) }
+//            case Success(data) => responder ! data
+            case Success(data) => responder ! data.foldLeft(ListBuffer[WorkingDayDTO]()) { (acc, t) => acc += WorkingDayDTO(t._1, t._2) }
             case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
           }
         }
@@ -136,6 +136,14 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
 
   private def createResponder(requestContext: RequestContext) = {
     context.actorOf(Props(new Responder(requestContext)))
+  }
+
+  private def createWorkingDayResponder(requestContext: RequestContext) = {
+    context.actorOf(Props(new WorkingDayResponder(requestContext)))
+  }
+
+  private def createMyTaskResponder(requestContext: RequestContext) = {
+    context.actorOf(Props(new MyTaskResponder(requestContext)))
   }
 }
 

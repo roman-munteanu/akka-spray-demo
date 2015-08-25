@@ -60,7 +60,8 @@ trait DbConfig extends DbTables {
 
     workingDays ++= Seq(
       WorkingDay(Some(1), 1, string2Date("2015-08-24"), string2DateTime("09:30:00"), string2DateTime("18:00:00"), string2DateTime("00:30:00"), Some("test")),
-      WorkingDay(Some(2), 1, string2Date("2015-08-27"), string2DateTime("10:00:00"), string2DateTime("19:00:00"), string2DateTime("01:00:00"), Some("another test"))
+      WorkingDay(Some(2), 1, string2Date("2015-08-27"), string2DateTime("10:00:00"), string2DateTime("19:00:00"), string2DateTime("01:00:00"), Some("another test")),
+      WorkingDay(Some(3), 2, string2Date("2015-08-25"), string2DateTime("09:00:00"), string2DateTime("17:30:00"), string2DateTime("00:30:00"), Some("third test"))
     )
   )
 

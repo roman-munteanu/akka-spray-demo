@@ -22,7 +22,7 @@ object WorkingDayProtocol extends DefaultJsonProtocol {
   implicit val dtFormat = new RootJsonFormat[DateTime] {
     lazy val formatter: format.DateTimeFormatter = DateTimeFormat.forPattern(Utils.mysqlDateTimeFormat)
     def read(json: JsValue): DateTime = formatter.parseDateTime(json.convertTo[String])
-    def write(dateTime: DateTime) =  JsString(dateTime.toString(Utils.mysqlDateTimeFormat))
+    def write(dateTime: DateTime) = JsString(dateTime.toString(Utils.mysqlDateTimeFormat))
   }
 
   implicit val jsonFormatWorkingDay = jsonFormat7(WorkingDay.apply)

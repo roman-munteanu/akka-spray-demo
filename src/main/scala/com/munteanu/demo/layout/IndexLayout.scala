@@ -1,4 +1,4 @@
-package com.munteanu.demo
+package com.munteanu.demo.layout
 
 import com.munteanu.demo.domain.Project
 

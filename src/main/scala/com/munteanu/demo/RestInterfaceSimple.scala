@@ -4,7 +4,9 @@ import akka.actor._
 import akka.event.slf4j.SLF4JLogging
 import akka.util.Timeout
 import com.munteanu.demo.domain.Project
+import com.munteanu.demo.layout.IndexLayout
 import com.munteanu.demo.protocol.ProjectProtocol
+import com.munteanu.demo.responder.Responder
 import spray.http.MediaTypes._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
