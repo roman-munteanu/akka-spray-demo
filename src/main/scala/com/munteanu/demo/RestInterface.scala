@@ -17,6 +17,8 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.{Success, Failure}
 
+//import spray.httpx.PlayTwirlSupport._
+
 /**
  * Created by romunteanu on 8/3/2015.
  */
@@ -40,6 +42,38 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   val workingDayService = new WorkingDayDAO
 
   def routes: Route =
+//    pathPrefix("css") {
+//      get {
+//        getFromResourceDirectory("css")
+//      }
+//    } ~
+//    pathPrefix("src") {
+//      get {
+//        getFromResourceDirectory("src")
+//      }
+//    } ~
+    pathPrefix("css" / Rest) { filename =>
+      getFromResource(s"css/$filename")
+    } ~
+    pathPrefix("src" / Rest) { filename =>
+      getFromResource(s"src/$filename")
+    } ~
+//      pathPrefix("twirl") {
+//        get {
+//          respondWithMediaType(`text/html`) {
+//            complete {
+//              html.index.render()
+//            }
+//          }
+//        }
+//      } ~
+//      pathPrefix("test") {
+//        get {
+//          respondWithMediaType(`text/html`) {
+//            complete(html.index().toString)
+//          }
+//        }
+//      } ~
     pathPrefix("app") {
       get {
         respondWithMediaType(`text/html`) {
@@ -50,16 +84,6 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
         }
       }
     } ~
-      pathPrefix("css") {
-        get {
-          getFromResourceDirectory("css")
-        }
-      } ~
-      pathPrefix("src") {
-        get {
-          getFromResourceDirectory("src")
-        }
-      } ~
     pathPrefix("rest" / "projects") {
       pathEnd {
         get { requestContext =>

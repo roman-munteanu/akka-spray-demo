@@ -22,7 +22,6 @@ object IndexLayout {
         <fieldset>
           <legend>Add project</legend>
           <form action="/rest/projects" method="post" id="project_form">
-            <input name="id" value="" placeholder="id" />
             <input name="name" value="" placeholder="name" />
             <textarea name="description" placeholder="description"></textarea>
             <button type="submit">Submit</button>

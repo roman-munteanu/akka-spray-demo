@@ -40,3 +40,6 @@ mainClass in Global := Some("com.munteanu.demo.Main")
 
 //jarName in assembly := "akka-spray-demo.jar"
 
+//seq(Twirl.settings: _*)
+
+Twirl.settings
