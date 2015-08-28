@@ -8,6 +8,7 @@ import com.munteanu.demo.domain.{WorkingDay, Project, MyTask}
 import com.munteanu.demo.dto.WorkingDayDTO
 import com.munteanu.demo.layout.IndexLayout
 import com.munteanu.demo.responder.{MyTaskResponder, WorkingDayResponder, Responder}
+import com.munteanu.demo.service.WorkingDayService
 import spray.http.MediaTypes._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
@@ -39,7 +40,7 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   val projectService = new ProjectDAO
 //  val projectService = new ProjectSQLDAO
   val myTaskService = new MyTaskDAO
-  val workingDayService = new WorkingDayDAO
+  val workingDayService = new WorkingDayService(new WorkingDayDAO)
 
   def routes: Route =
 //    pathPrefix("css") {
