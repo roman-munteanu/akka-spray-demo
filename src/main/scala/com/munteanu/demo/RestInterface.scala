@@ -27,10 +27,10 @@ class RestInterface extends HttpServiceActor with RestApi {
 
   override implicit def actorRefFactory = context
 
-  def receive = runRoute(routes)
+  def receive = runRoute(apiRoutes)
 }
 
-trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
+trait RestApi extends HttpService with SLF4JLogging {
   import com.munteanu.demo.protocol.ProjectProtocol._
   import com.munteanu.demo.protocol.MyTaskProtocol._
 
@@ -42,7 +42,7 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
   val myTaskService = new MyTaskDAO
   val workingDayService = new WorkingDayService(new WorkingDayDAO)
 
-  def routes: Route =
+  def apiRoutes: Route =
 //    pathPrefix("css") {
 //      get {
 //        getFromResourceDirectory("css")
@@ -160,15 +160,15 @@ trait RestApi extends HttpService with SLF4JLogging { actor: Actor =>
     }
 
   private def createResponder(requestContext: RequestContext) = {
-    context.actorOf(Props(new Responder(requestContext)))
+    actorRefFactory.actorOf(Props(new Responder(requestContext)))
   }
 
   private def createWorkingDayResponder(requestContext: RequestContext) = {
-    context.actorOf(Props(new WorkingDayResponder(requestContext)))
+    actorRefFactory.actorOf(Props(new WorkingDayResponder(requestContext)))
   }
 
   private def createMyTaskResponder(requestContext: RequestContext) = {
-    context.actorOf(Props(new MyTaskResponder(requestContext)))
+    actorRefFactory.actorOf(Props(new MyTaskResponder(requestContext)))
   }
 }
 

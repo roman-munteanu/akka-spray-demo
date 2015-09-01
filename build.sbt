@@ -29,11 +29,13 @@ libraryDependencies ++= {
     "org.joda"           %  "joda-convert"    % "1.7",
     "com.typesafe.akka"  %% "akka-testkit"    % akkaVersion  % "test",
     "io.spray"           %% "spray-testkit"   % sprayVersion % "test",
-    "org.specs2"         %% "specs2"          % "2.3.13"     % "test"
+    "org.specs2"         %% "specs2"          % "2.3.13"     % "test",
+    "org.scalatest"      % "scalatest_2.11"   % "2.2.4"      % "test"
   )
 }
 
-Revolver.settings
+//Revolver.settings
+Revolver.settings: Seq[sbt.Setting[_]]
 
 // Assembly settings
 mainClass in Global := Some("com.munteanu.demo.Main")
