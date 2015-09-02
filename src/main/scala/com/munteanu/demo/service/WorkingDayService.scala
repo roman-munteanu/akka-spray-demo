@@ -13,6 +13,6 @@ import scala.concurrent.Future
 class WorkingDayService(val dao: WorkingDayDAO) extends DbConfig {
 
   def findAllJoined(): Future[Seq[(WorkingDay, String)]] = {
-    db.run(dao.findAllJoined()(db))
+    db.run(dao.findAllJoined())
   }
 }

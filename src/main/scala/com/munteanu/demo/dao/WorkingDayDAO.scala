@@ -12,14 +12,14 @@ import scala.concurrent.Future
  */
 class WorkingDayDAO extends DbTables { // extends DbConfig
 
-//  def findAllJoined(): Future[Seq[(WorkingDay, String)]] = {
+//  def findAllJoined()(implicit db: DatabaseDef): Future[Seq[(WorkingDay, String)]] = {
 //    val query = for {
 //      (wd, p) <- workingDays join projects on (_.projectId === _.id)
 //    } yield (wd, p.name)
 //    db.run(query.result)
 //  }
 
-  def findAllJoined()(implicit db: DatabaseDef): DBIO[Seq[(WorkingDay, String)]] = {
+  def findAllJoined(): DBIO[Seq[(WorkingDay, String)]] = {
     val query = for {
       (wd, p) <- workingDays join projects on (_.projectId === _.id)
     } yield (wd, p.name)
