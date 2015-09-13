@@ -14,12 +14,12 @@ case class WorkingDay(
   startTime: DateTime,
   endTime: DateTime,
   breakTime: DateTime,
-  description: Option[String]) {
+  description: Option[String]) extends MyEntity[Long] {
   override def toString: String =
     s"WorkingDay[id=$id, projectId=$projectId, dateOfWork=$dateOfWork, startTime=$startTime, endTime=$endTime, breakTime=$breakTime, description=$description]"
 }
 
-class WorkingDayTable(tag: Tag) extends Table[WorkingDay](tag, "working_days") with DbTables {
+class WorkingDayTable(tag: Tag) extends Table[WorkingDay](tag, "working_days") with DbTables with IdentifiableTable[Long] {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def projectId = column[Long]("project_id")
   def dateOfWork = column[java.util.Date]("date_of_work")

@@ -156,6 +156,16 @@ trait RestApi extends HttpService with SLF4JLogging {
             case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
           }
         }
+      } ~
+      path(Segment) { id =>
+        get { requestContext =>
+          log.debug(s"GET wd: $id")
+          val responder = createWorkingDayResponder(requestContext)
+          workingDayService.findOne(id.toLong) onComplete {
+            case Success(wd) => responder ! wd
+            case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
+          }
+        }
       }
     }
 

@@ -15,4 +15,8 @@ class WorkingDayService(val dao: WorkingDayDAO) extends DbConfig {
   def findAllJoined(): Future[Seq[(WorkingDay, String)]] = {
     db.run(dao.findAllJoined())
   }
+
+  def findOne(id: Long): Future[Option[WorkingDay]] = {
+    db.run(dao.findOne(id))
+  }
 }

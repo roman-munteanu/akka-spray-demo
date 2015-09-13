@@ -2,7 +2,7 @@ package com.munteanu.demo.responder
 
 import akka.actor.{Actor, ActorLogging, PoisonPill}
 import com.munteanu.demo.dto.WorkingDayDTO
-import com.munteanu.demo.protocol.WorkingDayDTOProtocol
+import com.munteanu.demo.protocol.{WorkingDayProtocol, WorkingDayDTOProtocol}
 import spray.http.StatusCodes
 import spray.routing._
 
