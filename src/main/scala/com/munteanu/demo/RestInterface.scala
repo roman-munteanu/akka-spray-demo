@@ -3,12 +3,12 @@ package com.munteanu.demo
 import akka.actor._
 import akka.event.slf4j.SLF4JLogging
 import akka.util.Timeout
-import com.munteanu.demo.dao.{WorkingDayDAO, MyTaskDAO, ProjectSQLDAO, ProjectDAO}
+import com.munteanu.demo.dao._
 import com.munteanu.demo.domain.{WorkingDay, Project, MyTask}
 import com.munteanu.demo.dto.WorkingDayDTO
 import com.munteanu.demo.layout.IndexLayout
-import com.munteanu.demo.responder.{MyTaskResponder, WorkingDayResponder, Responder}
-import com.munteanu.demo.service.WorkingDayService
+import com.munteanu.demo.responder.{MyTaskResponder, WorkingDayResponder, Responder, PersonResponder}
+import com.munteanu.demo.service.{PersonService, WorkingDayService}
 import spray.http.MediaTypes._
 import spray.httpx.SprayJsonSupport._
 import spray.routing._
@@ -41,6 +41,7 @@ trait RestApi extends HttpService with SLF4JLogging {
 //  val projectService = new ProjectSQLDAO
   val myTaskService = new MyTaskDAO
   val workingDayService = new WorkingDayService(new WorkingDayDAO)
+  val personService = new PersonService(new PersonDAO)
 
   def apiRoutes: Route =
 //    pathPrefix("css") {
@@ -167,6 +168,18 @@ trait RestApi extends HttpService with SLF4JLogging {
           }
         }
       }
+    } ~
+    pathPrefix("rest" / "persons") {
+      pathEnd {
+        get { requestContext =>
+          val responder = createPersonResponder(requestContext)
+          personService.findAllJoined().onComplete {
+            case Success(data) =>
+              responder ! data
+            case Failure(ex) => responder ! TaskNotFound(ex.getMessage)
+          }
+        }
+      }
     }
 
   private def createResponder(requestContext: RequestContext) = {
@@ -179,6 +192,10 @@ trait RestApi extends HttpService with SLF4JLogging {
 
   private def createMyTaskResponder(requestContext: RequestContext) = {
     actorRefFactory.actorOf(Props(new MyTaskResponder(requestContext)))
+  }
+
+  private def createPersonResponder(requestContext: RequestContext) = {
+    actorRefFactory.actorOf(Props(new PersonResponder(requestContext)))
   }
 }
 

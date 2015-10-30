@@ -38,12 +38,13 @@ trait DbConfig extends DbTables {
   }
 
   // populate the Database
-  val schemas = projects.schema ++ myTasks.schema ++ workingDays.schema
+  val schemas = projects.schema ++ myTasks.schema ++ workingDays.schema ++ persons.schema ++ roles.schema ++ personToRole.schema
   val setup = DBIO.seq(
 
 //    myTasks.schema.drop,
 //    projects.schema.drop,
 //    (myTasks.schema ++ projects.schema).drop,
+
     schemas.create,
 
 //    projects += Project(Some(1), "Gemheap", "main")
@@ -62,6 +63,26 @@ trait DbConfig extends DbTables {
       WorkingDay(Some(1), 1, string2Date("2015-08-24"), string2DateTime("09:30:00"), string2DateTime("18:00:00"), string2DateTime("00:30:00"), Some("test")),
       WorkingDay(Some(2), 1, string2Date("2015-08-27"), string2DateTime("10:00:00"), string2DateTime("19:00:00"), string2DateTime("01:00:00"), Some("another test")),
       WorkingDay(Some(3), 2, string2Date("2015-08-25"), string2DateTime("09:00:00"), string2DateTime("17:30:00"), string2DateTime("00:30:00"), Some("third test"))
+    ),
+
+    persons ++= Seq(
+      Person(Some(1), "Alice", "Parker", "alice.parker@gemheap.com", "123", Some(string2Date("1984-05-21"))),
+      Person(Some(2), "Johanna", "White", "johanna.white@gemheap.com", "123", Some(string2Date("1989-02-17")))
+    ),
+
+    roles ++= Seq(
+      Role(Some(1), "Admin"),
+      Role(Some(2), "Moderator"),
+      Role(Some(3), "User"),
+      Role(Some(4), "Visitor")
+    ),
+
+    personToRole ++= Seq(
+      PersonToRole(1, 1),
+      PersonToRole(1, 2),
+      PersonToRole(1, 3),
+      PersonToRole(2, 2),
+      PersonToRole(2, 3)
     )
   )
 

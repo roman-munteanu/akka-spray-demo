@@ -2,7 +2,6 @@ package com.munteanu.demo.dao
 
 import com.munteanu.demo.config.DbConfig
 import com.munteanu.demo.domain.{WorkingDayTable, WorkingDay}
-import slick.driver.MySQLDriver
 import slick.driver.MySQLDriver.api._
 import slick.driver.MySQLDriver.backend.DatabaseDef
 import slick.lifted
@@ -30,5 +29,5 @@ class WorkingDayDAO extends DbTables with GenericDAO[WorkingDayTable, WorkingDay
 
   override val tableQuery: lifted.TableQuery[WorkingDayTable] = workingDays
 
-  override def queryById(id: Long): MySQLDriver.api.Query[WorkingDayTable, WorkingDay, Seq] = tableQuery.filter(_.id === id)
+  override def queryById(id: Long): Query[WorkingDayTable, WorkingDay, Seq] = tableQuery.filter(_.id === id)
 }
